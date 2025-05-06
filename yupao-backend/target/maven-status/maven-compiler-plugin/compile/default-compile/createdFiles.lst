@@ -1,0 +1,14 @@
+com\rainbowsea\usercenter\mapper\UserMapper.class
+com\rainbowsea\usercenter\common\ErrorCode.class
+com\rainbowsea\usercenter\service\impl\UserServiceImpl.class
+com\rainbowsea\usercenter\model\User.class
+com\rainbowsea\usercenter\model\request\UserLoginRequest.class
+com\rainbowsea\usercenter\exception\BusinessException.class
+com\rainbowsea\usercenter\controller\UserController.class
+com\rainbowsea\usercenter\model\request\UserRegisterRequest.class
+com\rainbowsea\usercenter\UserCenterApplication.class
+com\rainbowsea\usercenter\contant\UserConstant.class
+com\rainbowsea\usercenter\exception\GlobalExceptionHandler.class
+com\rainbowsea\usercenter\common\ResultUtils.class
+com\rainbowsea\usercenter\service\UserService.class
+com\rainbowsea\usercenter\common\BaseResponse.class
