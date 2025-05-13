@@ -10,6 +10,7 @@ import com.rainbowsea.yupao.model.User;
 import com.rainbowsea.yupao.model.request.UserLoginRequest;
 import com.rainbowsea.yupao.model.request.UserRegisterRequest;
 import com.rainbowsea.yupao.service.UserService;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import static com.rainbowsea.yupao.contant.UserConstant.USER_LOGIN_STATE;
 
 @RestController
 @RequestMapping("/user")
+@Api("接口文档的一个别名处理定义")
 public class UserController {
 
 

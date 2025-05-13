@@ -2,6 +2,8 @@ package com.rainbowsea.yupao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.rainbowsea.yupao.common.ErrorCode;
 import com.rainbowsea.yupao.exception.BusinessException;
 import com.rainbowsea.yupao.model.User;
@@ -10,10 +12,15 @@ import com.rainbowsea.yupao.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.rainbowsea.yupao.contant.UserConstant.USER_LOGIN_STATE;
 
@@ -109,7 +116,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserPassword(encryptPassword);
         boolean saveResult = this.save(user);
         if (!saveResult) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"注册失败");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "注册失败");
             //return -1;
         }
 
@@ -195,6 +202,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safeUser.setUpdateTime(originUser.getUpdateTime());
         safeUser.setUserRole(originUser.getUserRole());
         safeUser.setPlanetCode(originUser.getPlanetCode());
+        safeUser.setTags(originUser.getTags());
         return safeUser;
     }
 
@@ -211,6 +219,90 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         request.getSession().removeAttribute(USER_LOGIN_STATE);
 
         return 1;
+    }
+
+
+    /**
+     * 根据标签搜索用户(内存标签)
+     *
+     * @param tagNameList 用户要拥有的标签
+     * @return List<User> 用户列表
+     */
+    @Override
+    public List<User> searchUserByTags(List<String> tagNameList) {
+
+        // 方式1: SQL 查询：实现简单，可以通过拆分查询进一步优化。
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        //QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        //// 拼接 and 查询
+        //// like '%Java%' and like '%C++%'
+        //for (String tagName : tagNameList) {
+        //    // column 是数据表当中的字段名,不可以随便写
+        //    queryWrapper = queryWrapper.like("tags", tagName);
+        //
+        //}
+        //
+        //List<User> userList = userMapper.selectList(queryWrapper);
+        //
+        //// 使用 stream 进行过滤显示
+        //return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
+
+        // 方式2: 内存查询：灵活，可以通过并发进一步优化。就是查询出来后，通过 steam 进行处理，过滤。
+        // 1. 先查询所有用户
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        List<User> userList = userMapper.selectList(queryWrapper);
+        Gson gson = new Gson();
+        // 2. 在内存中判断是否包含要求的标签
+        return userList.stream().filter(user -> {
+            String tagsStr = user.getTags();
+            if (StringUtils.isBlank(tagsStr)) {
+                return false;
+            }
+            // 将 set 集合对象转换为 JSON 字符串
+            Set<String> tempTagNameSet = gson.fromJson(tagsStr, new TypeToken<Set<String>>() {
+            }.getType());
+            for (String tagName : tagNameList) {
+                // 判断 set 集合当中是否含有该 tagName 标签，不含有该标签就返回 false 过滤掉
+                if (!tempTagNameSet.contains(tagName)) {
+                    return false;
+                }
+            }
+            return false;
+        }).map(this::getSafetyUser).collect(Collectors.toList());
+
+    }
+
+
+    /**
+     * 根据标签搜索用户（SQL查询版）
+     *
+     * @param tagNameList 用户要拥有的标签
+     * @return List<User> 用户列表
+     */
+    @Deprecated
+    private List<User> searchUserByTagsBySQL(List<String> tagNameList) {
+        // 方式1: SQL 查询：实现简单，可以通过拆分查询进一步优化。
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        // 拼接 and 查询
+        // like '%Java%' and like '%C++%'
+        for (String tagName : tagNameList) {
+            // column 是数据表当中的字段名,不可以随便写
+            queryWrapper = queryWrapper.like("tags", tagName);
+
+        }
+
+        List<User> userList = userMapper.selectList(queryWrapper);
+
+        // 使用 stream 进行过滤显示
+        return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
+
     }
 }
 

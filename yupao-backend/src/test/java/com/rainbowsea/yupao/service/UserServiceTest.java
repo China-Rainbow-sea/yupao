@@ -9,6 +9,8 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -34,13 +36,13 @@ public class UserServiceTest {
 
     }
 
-    @org.junit.Test
+    //@org.junit.Test
     public void testDigest() {
         String newPassword = DigestUtils.md5DigestAsHex(("rainbowsea" + "123").getBytes());
         System.out.println(newPassword);
     }
 
-    @org.junit.Test
+    //@org.junit.Test
     public void testMatches() {
         // 正则表达式匹配字母、数字、下划线
         String regex = "^[a-zA-Z0-9_]+$";
@@ -99,5 +101,14 @@ public class UserServiceTest {
         Assertions.assertTrue(result > 0);
         //Assertions.assertTrue( result > 0);
 
+    }
+
+
+    @Test
+    public void testSearchUserByTags() {
+        List<String> tagNameList = Arrays.asList("java", "python");
+        List<User> userList = userService.searchUserByTags(tagNameList);
+        Assertions.assertNotNull(userList);
+        //Assert.assertNotNull(userList);
     }
 }

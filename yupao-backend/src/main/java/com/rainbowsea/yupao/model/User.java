@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 public class User implements Serializable {
 
 
-
     @TableField(exist = false)  // 表示该字段不存在于数据库当中，不需要映射
     private static final long serialVersionUID = -7187269424432509223L;
     /**
@@ -101,4 +100,10 @@ public class User implements Serializable {
      * 用户的编号
      */
     private String planetCode;
+
+
+    /**
+     * 标签列表 json
+     */
+    private String tags;
 }

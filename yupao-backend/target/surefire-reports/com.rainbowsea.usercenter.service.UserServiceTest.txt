@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.rainbowsea.usercenter.service.UserServiceTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 4.599 s <<< FAILURE! - in com.rainbowsea.usercenter.service.UserServiceTest
-userRegister  Time elapsed: 0.021 s  <<< ERROR!
-com.rainbowsea.usercenter.exception.BusinessException
-	at com.rainbowsea.usercenter.service.UserServiceTest.userRegister(UserServiceTest.java:61)
-

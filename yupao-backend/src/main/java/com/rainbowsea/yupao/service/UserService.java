@@ -4,6 +4,7 @@ import com.rainbowsea.yupao.model.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author huo
@@ -50,4 +51,11 @@ public interface UserService extends IService<User> {
      * @return 返回 1 表示注销成功
      */
     int userLogout(HttpServletRequest request);
+
+    /**
+     * 根据标签搜索用户
+     * @param tagNameList 用户要拥有的标签
+     * @return List<User>
+     */
+    List<User> searchUserByTags(List<String> tagNameList);
 }

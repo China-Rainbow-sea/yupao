@@ -3,6 +3,8 @@ server:
   servlet:
     context-path: /api
 spring:
+  profiles:
+    active: dev
   application:
     name: yupao-backend
   mvc:
@@ -20,10 +22,11 @@ spring:
 mybatis-plus:
   global-config:
     db-config:
-      logic-delete-field: isDelete # 全局逻辑删除字段名
+      logic-delete-field: isDelete # 全局逻辑删除字段名,所以项目表当中所有逻辑删除,都用这个字段名,保证全局性
       logic-delete-value: 1 # 逻辑已删除值(默认值为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认值为 0)
   configuration:
     # 取消数据库驼峰映射
     map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
