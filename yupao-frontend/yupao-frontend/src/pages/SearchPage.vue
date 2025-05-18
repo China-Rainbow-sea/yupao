@@ -91,14 +91,14 @@
     /**
      * 执行搜索
      */
-    // const doSearchResult = () => {
-    //     router.push({
-    //         path: '/user/list',
-    //         query: {
-    //             tags: activeIds.value
-    //         }
-    //     })
-    // }
+    const doSearchResult = () => {
+        router.push({
+            path: '/user/list',
+            query: {
+                tags: activeIds.value
+            }
+        })
+    }
 
 </script>
 
