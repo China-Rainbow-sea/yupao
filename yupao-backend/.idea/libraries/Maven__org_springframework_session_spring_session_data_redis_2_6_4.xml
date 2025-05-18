@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.session:spring-session-data-redis:2.6.4">
+    <CLASSES>
+      <root url="jar://G:/devData/maven-repository/org/springframework/session/spring-session-data-redis/2.6.4/spring-session-data-redis-2.6.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://G:/devData/maven-repository/org/springframework/session/spring-session-data-redis/2.6.4/spring-session-data-redis-2.6.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://G:/devData/maven-repository/org/springframework/session/spring-session-data-redis/2.6.4/spring-session-data-redis-2.6.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

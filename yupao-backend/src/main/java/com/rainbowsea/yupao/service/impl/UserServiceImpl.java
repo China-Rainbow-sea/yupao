@@ -270,7 +270,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     return false;
                 }
             }
-            return false;
+            return true;
         }).map(this::getSafetyUser).collect(Collectors.toList());
 
     }

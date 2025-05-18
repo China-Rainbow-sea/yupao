@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.rainbowsea.yupao.service.UserServiceTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.988 s <<< FAILURE! - in com.rainbowsea.yupao.service.UserServiceTest
-userRegister  Time elapsed: 0.016 s  <<< ERROR!
-com.rainbowsea.yupao.exception.BusinessException
-	at com.rainbowsea.yupao.service.UserServiceTest.userRegister(UserServiceTest.java:64)
-

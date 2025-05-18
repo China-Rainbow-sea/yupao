@@ -12,10 +12,13 @@ import com.rainbowsea.yupao.model.request.UserRegisterRequest;
 import com.rainbowsea.yupao.service.UserService;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -29,6 +32,7 @@ import static com.rainbowsea.yupao.contant.UserConstant.USER_LOGIN_STATE;
 @RestController
 @RequestMapping("/user")
 @Api("接口文档的一个别名处理定义")
+@CrossOrigin(origins = {"http://localhost:5173"})
 public class UserController {
 
 
@@ -122,6 +126,24 @@ public class UserController {
             return user;
         }).collect(Collectors.toList());*/
     }
+
+
+    /**
+     * 根据 tags 标签查询用户信息，给前端展示，tags 可以是多个
+     * @param tagNameList tags 标签列表，多个
+     * @return userList 对应标签的列表用户信息
+     */
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
+
+        if(CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        List<User> userList = userService.searchUserByTags(tagNameList);
+        return ResultUtils.success(userList);
+    }
+
 
 
     /**
