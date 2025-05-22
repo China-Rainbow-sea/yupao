@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rainbowsea.yupao.common.ErrorCode;
+import com.rainbowsea.yupao.contant.UserConstant;
 import com.rainbowsea.yupao.exception.BusinessException;
 import com.rainbowsea.yupao.model.User;
 import com.rainbowsea.yupao.service.UserService;
 import com.rainbowsea.yupao.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.Now;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
@@ -275,6 +277,77 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     }
 
+    @Override
+    public int updateUser(User user, User loginUser) {
+        // 仅当前用户，或者管理员可以修改
+        Long userId = user.getId();
+        if (userId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        // to do 补充校验，如果用户没有传任何要更新的值，就直接报错
+        // 如果是管理员，允许更新任意用户
+        // 如果不是管理员，只允许更新当前(自己的)信息
+        if (!isAdmin(loginUser) && userId != loginUser.getId()) { // 既不是当前用户，又不是管理员，则权限不足
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+
+        User oldUser = userMapper.selectById(userId);
+        if (oldUser == null) {
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+
+        return userMapper.updateById(user);
+    }
+
+
+    /**
+     * 获取登录用户信息
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public User getLoginUser(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        // 从存储在 Redis 当中的Session 当中获取，登录的用户信息
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        if (userObj == null) {
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+
+        return (User) userObj;
+    }
+
+    /**
+     * 判断用户是否为管理员
+     *
+     * @param request 请求体
+     * @return 是管理员返回 true,不是管理员返回 false
+     */
+    public boolean isAdmin(HttpServletRequest request) {
+        // 仅管理员可查询
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) userObj;
+
+        return user != null && user.getUserRole() == UserConstant.ADMIN_ROLE;
+
+    }
+
+
+    /**
+     * 是否为管理员
+     *
+     * @param loginUser
+     * @return
+     */
+    @Override
+    public boolean isAdmin(User loginUser) {
+        return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
+    }
 
     /**
      * 根据标签搜索用户（SQL查询版）

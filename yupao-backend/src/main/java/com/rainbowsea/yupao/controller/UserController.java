@@ -51,14 +51,14 @@ public class UserController {
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
         if (userLoginRequest == null) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
 
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
 
         if (StringUtils.isAllBlank(userAccount, userPassword)) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
 
         User user = userService.userLogin(userAccount, userPassword, request);
@@ -107,7 +107,7 @@ public class UserController {
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(@RequestBody String username, HttpServletRequest request) {
         // 仅仅管理员可以查询
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             return ResultUtils.success(new ArrayList<>());
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -155,7 +155,7 @@ public class UserController {
     @GetMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         // 仅仅管理员可以删除用户
-        if (!isAdmin(request)) {
+        if (!userService.isAdmin(request)) {
             return null;
         }
         if (id <= 0) {
@@ -208,21 +208,45 @@ public class UserController {
 
     }
 
-    /**
-     * 判断用户是否为管理员
-     *
-     * @param request 请求体
-     * @return 是管理员返回 true,不是管理员返回 false
-     */
-    private boolean isAdmin(HttpServletRequest request) {
-        // 仅管理员可查询
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User user = (User) userObj;
 
-        // 如果用户不是管理员，返回一个空的 List 集合
-        if (user == null || user.getUserRole() != 1) {
-            return false;
+
+
+    /**
+     * 更新用户信息
+     * @param user
+     * @param request
+     * @return
+     */
+    @PostMapping("/update")
+    public BaseResponse<Integer> updateUser(@RequestBody User user,HttpServletRequest request) {
+        // 校验参数是否为空
+        if(user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        return true;
+
+        User loginUser = userService.getLoginUser(request);
+        int result = userService.updateUser(user,loginUser);
+
+        return ResultUtils.success(result);
     }
+
+
+    /**
+     * 首页 recommend 推荐显示内容
+     * @param request
+     * @return
+     */
+    @GetMapping("/recommend")
+    public BaseResponse<List<User>> recommendUsers(HttpServletRequest request) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        List<User> userList = userService.list(queryWrapper);
+        List<User> list = userList.stream().
+                map(user -> userService.getSafetyUser(user)).
+                collect(Collectors.toList());
+
+        return ResultUtils.success(list);
+    }
+
+
+
 }

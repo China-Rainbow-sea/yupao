@@ -2,6 +2,11 @@ server:
   port: 8080
   servlet:
     context-path: /api
+    session:
+      cookie:
+        domain: localhost
+        secure: true
+        same-site: none
 spring:
   profiles:
     active: dev
