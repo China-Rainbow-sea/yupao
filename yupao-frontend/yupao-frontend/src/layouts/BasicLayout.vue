@@ -45,9 +45,11 @@
 
     // 表示底部栏第一个主页亮起
     // const active = ref("index");
-    // const onChange = (index) => Toast(`标签 ${index}`);
+    const onChange = (index) => Toast(`标签 ${index}`);
 </script>
 
 <style scoped>
-
+#content {
+  padding-bottom: 50px;
+}
 </style>

@@ -12,7 +12,7 @@ const myAxios = axios.create({
 //     baseURL: isDev ? 'http://localhost:8080/api' : '线上地址',
 // });
 
-// myAxios.defaults.withCredentials = true; // 配置为true
+myAxios.defaults.withCredentials = false; // 配置为true，表示前端向后端发送请求的时候，需要携带上凭证cookie
 // 创建实例后修改默认值
 
 
@@ -31,7 +31,7 @@ myAxios.interceptors.response.use(function (response) {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
     console.log('我收到你的响应了',response)
-    return response;
+    return response.data;
 }, function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么

@@ -1,20 +1,22 @@
 <template>
-    <van-card
-            v-for="user in userList"
-            :desc="user.prfile"
-            :title="`${user.username} (${user.planetCode}})`"
-            :thumb="user.avatarUrl"
+<!--    <van-card-->
+<!--            v-for="user in userList"-->
+<!--            :desc="user.prfile"-->
+<!--            :title="`${user.username} (${user.planetCode}})`"-->
+<!--            :thumb="user.avatarUrl"-->
 
-    >
-        <template #tags>
-            <van-tag plain type="danger" v-for="tag in user.tags" style="margin-right: 8px; margin-top: 8px">
-                {{tag}}
-            </van-tag>
-        </template>
-        <template #footer>
-            <van-button size="mini">联系我</van-button>
-        </template>
-    </van-card>
+<!--    >-->
+<!--        <template #tags>-->
+<!--            <van-tag plain type="danger" v-for="tag in user.tags" style="margin-right: 8px; margin-top: 8px">-->
+<!--                {{tag}}-->
+<!--            </van-tag>-->
+<!--        </template>-->
+<!--        <template #footer>-->
+<!--            <van-button size="mini">联系我</van-button>-->
+<!--        </template>-->
+<!--    </van-card>-->
+
+  <user-card-list :user-list="userList"/>
     <!-- 搜索提示 -->
     <van-empty v-if="!userList || userList.length < 1" description="暂无结果"/>
 </template>
@@ -25,7 +27,7 @@
     import myAxios from "../plugins/myAxios";
     import {Toast} from "vant";
     import qs from 'qs';
-    // import UserCardList from "../components/UserCardList.vue";
+    import UserCardList from "../components/UserCardList.vue";
 
     const route = useRoute();
     const {tags} = route.query;
@@ -44,7 +46,7 @@
             .then(function (response) {
                 // console.log('/user/search/tags succeed', response);
                 // Toast.success("请求成功")
-                return response.data?.data;
+                return response?.data;
             })
             .catch(function (error) {
                 // console.error('/user/search/tags error', error);
