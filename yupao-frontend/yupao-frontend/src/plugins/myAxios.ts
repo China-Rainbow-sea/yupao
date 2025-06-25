@@ -1,5 +1,7 @@
 import axios from "axios";
 
+
+// axios.defaults.withCredentials = true; // 允许携带凭证
 // const isDev = process.env.NODE_ENV === 'development';
 
 // 创建实例时配置默认值
@@ -12,7 +14,7 @@ const myAxios = axios.create({
 //     baseURL: isDev ? 'http://localhost:8080/api' : '线上地址',
 // });
 
-myAxios.defaults.withCredentials = false; // 配置为true，表示前端向后端发送请求的时候，需要携带上凭证cookie
+myAxios.defaults.withCredentials = true; // 配置为true，表示前端向后端发送请求的时候，需要携带上凭证cookie
 // 创建实例后修改默认值
 
 

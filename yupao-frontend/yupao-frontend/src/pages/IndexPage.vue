@@ -36,16 +36,17 @@ const userList = ref([]);
 onMounted(async () => {
   const userListData = await myAxios.get('/user/recommend', {
     params: {
-      tagNameList: tags
+      pageSize: 8,
+      pageNum: 1,
     },
   })
       .then(function (response) {
-        console.log('/user/search/tags succeed', response);
+        console.log('/user/recommend  succeed', response);
         Toast.success("请求成功")
-        return response?.data;
+        return response?.data?.records;
       })
       .catch(function (error) {
-        console.error('/user/search/tags error', error);
+        console.error('/user/recommend  error', error);
         Toast.fail('请求失败')
       })
   console.log("数据数据:", userListData)
