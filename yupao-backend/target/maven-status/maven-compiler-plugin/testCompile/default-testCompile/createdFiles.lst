@@ -1,1 +1,4 @@
+com\rainbowsea\yupao\service\InsertUsersTest.class
 com\rainbowsea\yupao\service\UserServiceTest.class
+com\rainbowsea\yupao\service\RedissonTest.class
+com\rainbowsea\yupao\service\RedisTest.class

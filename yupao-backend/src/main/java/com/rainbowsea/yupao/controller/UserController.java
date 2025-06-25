@@ -2,6 +2,7 @@ package com.rainbowsea.yupao.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rainbowsea.yupao.common.BaseResponse;
 import com.rainbowsea.yupao.common.ErrorCode;
 import com.rainbowsea.yupao.common.ResultUtils;
@@ -11,7 +12,10 @@ import com.rainbowsea.yupao.model.request.UserLoginRequest;
 import com.rainbowsea.yupao.model.request.UserRegisterRequest;
 import com.rainbowsea.yupao.service.UserService;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,14 +36,17 @@ import static com.rainbowsea.yupao.contant.UserConstant.USER_LOGIN_STATE;
 
 @RestController
 @RequestMapping("/user")
-@Api("接口文档的一个别名处理定义")
+@Api("接口文档的一个别名处理定义 UserController")
 @CrossOrigin(origins = {"http://localhost:5173"})
+@Slf4j
 public class UserController {
 
 
     @Resource
     private UserService userService;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 用户登录
@@ -232,20 +240,75 @@ public class UserController {
 
 
     /**
-     * 首页 recommend 推荐显示内容
+     * 首页 recommend 推荐显示内容，同时进行了分页处理
+     *
      * @param request
      * @return
      */
-    @GetMapping("/recommend")
-    public BaseResponse<List<User>> recommendUsers(HttpServletRequest request) {
+   /* @GetMapping("/recommend")
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum,HttpServletRequest request) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        List<User> userList = userService.list(queryWrapper);
-        List<User> list = userList.stream().
-                map(user -> userService.getSafetyUser(user)).
-                collect(Collectors.toList());
 
-        return ResultUtils.success(list);
+        Page<User> userList = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+
+        //List<User> userList = userService.list(queryWrapper);
+        //List<User> list = userList.stream().
+        //        map(user -> userService.getSafetyUser(user)).
+        //        collect(Collectors.toList());
+
+        return ResultUtils.success(userList);
+    }*/
+
+    /**
+     * 走缓存的方式，实现
+     * @param pageSize 一页显示的大小个数
+     * @param pageNum 显示第几页
+     * @param request request
+     * @return BaseResponse<Page<User>>
+     */
+    @GetMapping("/recommend")
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        String redisKey = String.format("yupao:user:recommend:%s", loginUser.getId());
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        // 如果有缓存，直接读缓存
+        Page<User> userPage = (Page<User>) valueOperations.get(redisKey);
+        if (userPage != null) {
+            return ResultUtils.success(userPage);
+        }
+
+        // 无缓存，查数据库
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        userPage = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        // 写缓存
+        try {
+            valueOperations.set(redisKey, userPage, 30000, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            log.error("redis set key error", e);
+        }
+        return ResultUtils.success(userPage);
     }
+
+
+    /**
+     * 首页 recommend 推荐显示内容，未使用 Mybatis-Plus 分页处理 --- 测试
+     *
+     * @param request
+     * @return
+     */
+    //@GetMapping("/recommend")
+    //public BaseResponse<List<User>> recommendUsers(long pageSize, long pageNum,HttpServletRequest request) {
+    //    QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+    //
+    //    //Page<User> userList = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+    //
+    //    List<User> userList = userService.list(queryWrapper);
+    //    List<User> list = userList.stream().
+    //            map(user -> userService.getSafetyUser(user)).
+    //            collect(Collectors.toList());
+    //
+    //    return ResultUtils.success(list);
+    //}
 
 
 

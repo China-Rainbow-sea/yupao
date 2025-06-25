@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "spring.redis",
+      "type": "com.rainbowsea.yupao.config.RedissonConfig",
+      "sourceType": "com.rainbowsea.yupao.config.RedissonConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.redis.host",
+      "type": "java.lang.String",
+      "sourceType": "com.rainbowsea.yupao.config.RedissonConfig"
+    },
+    {
+      "name": "spring.redis.port",
+      "type": "java.lang.String",
+      "sourceType": "com.rainbowsea.yupao.config.RedissonConfig"
+    }
+  ],
+  "hints": []
+}
