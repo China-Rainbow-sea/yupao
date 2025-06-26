@@ -1,7 +1,9 @@
 package com.rainbowsea.yupao.model.dto;
 
 
+import com.rainbowsea.yupao.common.PageRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -10,7 +12,10 @@ import java.util.List;
  *
  */
 @Data
-public class TeamQuery {
+@EqualsAndHashCode(callSuper = true) //  告诉lombok在生成的 equals()​ 方法中调用 super.equals()​，并在生成的 hashCode()​ 方法中包含 super
+// .hashCode
+// ()​ 的结果。
+public class TeamQuery extends PageRequest {
     /**
      * id
      */

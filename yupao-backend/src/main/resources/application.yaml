@@ -18,7 +18,7 @@ spring:
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/usercentertest
+    url: jdbc:mysql://localhost:3306/usercenter
     username: root
     password: MySQL123
     # session 失效时间

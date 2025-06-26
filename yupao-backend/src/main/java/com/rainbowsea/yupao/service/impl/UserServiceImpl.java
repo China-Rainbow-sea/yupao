@@ -288,7 +288,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // to do 补充校验，如果用户没有传任何要更新的值，就直接报错
         // 如果是管理员，允许更新任意用户
         // 如果不是管理员，只允许更新当前(自己的)信息
-        if (!isAdmin(loginUser) && userId != loginUser.getId()) { // 既不是当前用户，又不是管理员，则权限不足
+        //Long userId2 = loginUser.getId();
+        //if (!isAdmin(loginUser) && userId != loginUser.getId()) { // 既不是当前用户，又不是管理员，则权限不足
+        // 注意：Long 对象类型，不要用 ==，!= 判断，== 判断的是引用的地址了。
+        if (!isAdmin(loginUser) && !userId.equals(loginUser.getId())) { // 既不是当前用户，又不是管理员，则权限不足
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
 
