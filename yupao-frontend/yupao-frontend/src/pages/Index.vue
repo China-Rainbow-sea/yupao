@@ -9,11 +9,12 @@
 </template>
 
 <script setup lang="ts">
+  import {UserType} from "../models/user";
 import { ref, watchEffect } from 'vue';
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
 import UserCardList from "../components/UserCardList.vue";
-import {UserType} from "../models/user";
+
 
 const isMatchMode = ref<boolean>(false);
 
