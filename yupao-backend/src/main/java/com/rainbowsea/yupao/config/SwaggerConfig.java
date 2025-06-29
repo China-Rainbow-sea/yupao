@@ -1,4 +1,4 @@
-package com.yupi.yupao.config;
+package com.rainbowsea.yupao.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * 自定义 Swagger 接口文档的配置
+ * 访问该接口文档的地址是: 访问路径：你的项目名映射路径+/doc.html ；比如： localhost:8080/api/doc.html
  *
  * @author <a href="https://github.com/rainbowsea">Raibnowsea</a>
  */
@@ -43,10 +44,10 @@ public class SwaggerConfig {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("鱼皮用户中心")
-                .description("鱼皮用户中心接口文档")
+                .title("伙伴匹配")
+                .description("伙伴匹配接口文档")
                 .termsOfServiceUrl("https://github.com/rainbowsea")
-                .contact(new Contact("yupi", "https://github.com/rainbowsea", "xxx@qq.com"))
+                .contact(new Contact("RainbowSea", "https://github.com/rainbowsea", "xxx@qq.com"))
                 .version("1.0")
                 .build();
     }

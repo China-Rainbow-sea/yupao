@@ -3,7 +3,7 @@ package com.rainbowsea.yupao.exception;
 
 import com.rainbowsea.yupao.common.BaseResponse;
 import com.rainbowsea.yupao.common.ErrorCode;
-import com.rainbowsea.yupao.common.ResultUtils;
+import com.rainbowsea.yupao.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 全局异常处理器
+ * 捕获全局的异常，从而返回给前端。
  */
 @RestControllerAdvice
 @Slf4j

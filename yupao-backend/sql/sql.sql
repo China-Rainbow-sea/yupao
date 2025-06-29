@@ -19,8 +19,7 @@ alter table user add column tags varchar(1024) null comment '标签列表';
 
 
 # 数据库初始化
-# @author <a href="https://github.com/liyupi">程序员鱼皮</a>
-# @from <a href="https://yupi.icu">编程导航知识星球</a>
+# @author <a href="https://github.com/China-Rainbow-sea">
 create
 database if not exists yupao;
 

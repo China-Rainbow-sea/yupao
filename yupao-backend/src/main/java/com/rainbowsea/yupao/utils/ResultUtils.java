@@ -1,5 +1,8 @@
-package com.rainbowsea.yupao.common;
+package com.rainbowsea.yupao.utils;
 
+
+import com.rainbowsea.yupao.common.BaseResponse;
+import com.rainbowsea.yupao.common.ErrorCode;
 
 /**
  * 返回工具类

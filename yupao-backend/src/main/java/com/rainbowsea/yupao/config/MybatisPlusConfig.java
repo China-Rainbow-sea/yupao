@@ -7,6 +7,10 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+/**
+ * MybatisPlus 分页插件的配置
+ */
 @Configuration
 @MapperScan("com.rainbowsea.yupao.mapper")
 public class MybatisPlusConfig {

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rainbowsea.yupao.common.BaseResponse;
 import com.rainbowsea.yupao.common.ErrorCode;
-import com.rainbowsea.yupao.common.ResultUtils;
+import com.rainbowsea.yupao.utils.ResultUtils;
 import com.rainbowsea.yupao.exception.BusinessException;
 import com.rainbowsea.yupao.model.User;
 import com.rainbowsea.yupao.model.request.UserLoginRequest;
@@ -37,7 +37,7 @@ import static com.rainbowsea.yupao.contant.UserConstant.USER_LOGIN_STATE;
 @RestController
 @RequestMapping("/user")
 @Api("接口文档的一个别名处理定义 UserController")
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:5173","http://localhost:3000"})  // 配置前端访问路径的放行,可以配置多个
 @Slf4j
 public class UserController {
 
@@ -184,7 +184,7 @@ public class UserController {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null) {
-            return null;
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
 
         Long userId = currentUser.getId();
@@ -311,5 +311,20 @@ public class UserController {
     //}
 
 
+    /**
+     * 获取最匹配的用户
+     *
+     * @param num
+     * @param request
+     * @return
+     */
+    @GetMapping("/match")
+    public BaseResponse<List<User>> matchUsers(long num, HttpServletRequest request) {
+        if (num <= 0 || num > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.getLoginUser(request);
+        return ResultUtils.success(userService.matchUsers(num, user));
+    }
 
 }

@@ -41,7 +41,7 @@ public class PreCacheJob {
 
     // 每天执行，预热推荐用户,每个月的 31号,0:00执行
     @Scheduled(cron = "0 31 0 * * *")
-    @Scheduled(cron = "0 23 21 25 6 ?")
+    //@Scheduled(cron = "0 23 21 25 6 ?")
     public void doCacheRecommendUser() {
         RLock lock = redissonClient.getLock("yupao:precachejob:docache:lock");
         System.out.println("定时任务被执行了");
